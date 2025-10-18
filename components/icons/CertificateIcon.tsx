@@ -1,0 +1,8 @@
+import React from 'react';
+import { IconProps } from './Icon';
+
+export const CertificateIcon: React.FC<IconProps> = ({ className = "w-5 h-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.75m12 3.375-3.375-3.375m0 0a1.125 1.125 0 0 1-1.591 0l-5.25-5.25a1.125 1.125 0 0 1 0-1.591l1.5-1.5a1.125 1.125 0 0 1 1.591 0l5.25 5.25a1.125 1.125 0 0 1 0 1.591l-1.5 1.5Z" />
+  </svg>
+);

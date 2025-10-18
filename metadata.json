@@ -1,0 +1,5 @@
+{
+  "name": "Hệ Thống Quản Lý Chất Lượng Xét Nghiệm",
+  "description": "Một ứng dụng web để theo dõi hoạt động của khoa xét nghiệm theo bộ tiêu chí 2429 và ISO 15189:2022, tích hợp AI tra cứu thông tin trên hệ thông phòng xét nghiệm",
+  "requestFramePermissions": []
+}

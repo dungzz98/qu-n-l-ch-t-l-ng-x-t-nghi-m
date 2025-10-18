@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Kho Hóa chất Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs"
+  }
+}
+</script>
+<style>
+  @keyframes pulse-yellow {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: #fef9c3; /* Tailwind yellow-100 */
+    }
+  }
+  .animate-pulse-yellow {
+    animation: pulse-yellow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @media print {
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    body, html {
+        background-color: #fff;
+    }
+    body * {
+      visibility: hidden;
+    }
+    #printable-barcode-area, #printable-barcode-area *,
+    #printable-slip-area, #printable-slip-area *,
+    #printable-disposal-area, #printable-disposal-area * {
+      visibility: visible;
+    }
+    #printable-barcode-area, #printable-slip-area,
+    #printable-disposal-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    .label-container {
+      page-break-after: always;
+    }
+    .label-container:last-child {
+      page-break-after: auto;
+    }
+  }
+  .chat-bubble-user {
+    background-color: #dbeafe; /* Tailwind blue-200 */
+    color: #1e3a8a; /* Tailwind blue-900 */
+  }
+  .chat-bubble-ai {
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+    color: #1f2937; /* Tailwind gray-800 */
+  }
+</style>
+</head>
+  <body class="bg-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
