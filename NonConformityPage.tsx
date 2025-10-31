@@ -15,6 +15,7 @@ interface NonConformityPageProps {
   onAddOrUpdateNC: (item: NonConformity | null) => void;
   onDeleteNC: (id: string) => void;
   currentUser: User | null;
+  focusedItemId: string | null;
   onExportToDoc: (items: NonConformity[]) => void;
   onExportToExcel: (items: NonConformity[]) => void;
   onExportCorrectiveActionToDoc: (item: NonConformity) => void;
@@ -40,32 +41,36 @@ export const NonConformityPage: React.FC<NonConformityPageProps> = (props) => {
   const { 
       nonConformities, onAddOrUpdateNC, onDeleteNC, onExportToDoc, onExportToExcel, 
       onExportCorrectiveActionToDoc, onExportCorrectiveActionLogToDoc, onExportCorrectiveActionLogToExcel,
-      preventiveActionReports 
+      preventiveActionReports, focusedItemId
   } = props;
   const [activeTab, setActiveTab] = useState<'list' | 'corrective_actions' | 'preventive_actions'>('list');
   const [filterText, setFilterText] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [focusedNcId, setFocusedNcId] = useState<string | null>(null);
+  const [localFocusedNcId, setLocalFocusedNcId] = useState<string | null>(focusedItemId);
   const [focusedPaId, setFocusedPaId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (focusedNcId || focusedPaId) {
+    setLocalFocusedNcId(focusedItemId);
+  }, [focusedItemId]);
+
+  useEffect(() => {
+    if (localFocusedNcId || focusedPaId) {
         const timer = setTimeout(() => {
-            setFocusedNcId(null);
+            setLocalFocusedNcId(null);
             setFocusedPaId(null);
         }, 2500); // Animation duration
         return () => clearTimeout(timer);
     }
-  }, [focusedNcId, focusedPaId]);
+  }, [localFocusedNcId, focusedPaId]);
 
   const handleNavigate = (tab: 'list' | 'corrective_actions' | 'preventive_actions', id: string) => {
     setActiveTab(tab);
     if (tab === 'preventive_actions') {
       setFocusedPaId(id);
-      setFocusedNcId(null);
+      setLocalFocusedNcId(null);
     } else {
-      setFocusedNcId(id);
+      setLocalFocusedNcId(id);
       setFocusedPaId(null);
     }
   };
@@ -221,8 +226,9 @@ export const NonConformityPage: React.FC<NonConformityPageProps> = (props) => {
                 const status = statusMap[item.status];
                 const severity = severityMap[item.severity];
                 const paReport = item.preventiveActionId ? paReportMap.get(item.preventiveActionId) : null;
+                const isFocused = item.id === localFocusedNcId;
                 return (
-                <tr key={item.id} className={`transition-colors duration-300 ${item.id === focusedNcId ? 'animate-pulse-yellow' : 'hover:bg-slate-50'}`}>
+                <tr key={item.id} className={`transition-colors duration-300 ${isFocused ? 'animate-pulse-yellow' : 'hover:bg-slate-50'}`}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                       <p className="text-slate-700">{item.ncId}</p>
                       {item.hdkpId && (
@@ -286,8 +292,9 @@ export const NonConformityPage: React.FC<NonConformityPageProps> = (props) => {
             {filteredCorrectiveActionItems.length > 0 ? filteredCorrectiveActionItems.map(item => {
               const status = statusMap[item.status];
               const paReport = item.preventiveActionId ? paReportMap.get(item.preventiveActionId) : null;
+              const isFocused = item.id === localFocusedNcId;
               return (
-                <div key={item.id} className={`p-4 border rounded-lg transition-all duration-300 ${item.id === focusedNcId ? 'animate-pulse-yellow' : 'hover:shadow-md bg-white'}`}>
+                <div key={item.id} className={`p-4 border rounded-lg transition-all duration-300 ${isFocused ? 'animate-pulse-yellow' : 'hover:shadow-md bg-white'}`}>
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-grow">
                       <div className="flex items-center gap-3 flex-wrap">

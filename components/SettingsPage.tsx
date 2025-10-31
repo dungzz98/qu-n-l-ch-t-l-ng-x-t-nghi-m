@@ -4,6 +4,7 @@ import { PlusIcon } from './icons/PlusIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TrashIcon } from './icons/TrashIcon';
 import { ImportIcon } from './icons/ImportIcon';
+import CatalogImportModal from './ChemicalMasterImportModal';
 
 
 type ActiveTab = 'tests' | 'chemicals' | 'equipment' | 'locations' | 'storage' | 'iqc' | 'eqa' | 'documents' | 'users' | 'schedule';
@@ -21,8 +22,10 @@ interface SettingsPageProps {
     documentCategories: DocumentCategory[];
     onOpenModal: (type: ModalType, item?: any) => void;
     onDeleteItem: (type: ModalType, id: string) => void;
-    onOpenImportModal: () => void;
-    // New props for user and schedule management
+    // Props for chemical master import
+    onImportChemicalMasters: (file: File, mode: 'replace' | 'append') => void;
+    onDownloadChemicalTemplate: () => void;
+    // Props for user and schedule management
     users: User[];
     currentUser: User;
     onOpenUserFormModal: (user: User | null) => void;
@@ -38,13 +41,14 @@ interface SettingsPageProps {
 const SettingsPage: React.FC<SettingsPageProps> = (props) => {
     const { 
         testParameters, chemicalMasters, instruments, roomLocations, storageLocations, controlMaterials, eqaMaterials, documentCategories,
-        onOpenModal, onDeleteItem, onOpenImportModal,
+        onOpenModal, onDeleteItem, onImportChemicalMasters, onDownloadChemicalTemplate,
         users, currentUser, onOpenUserFormModal, onDeleteUser,
         workSchedule, holidays, onUpdateWorkSchedule, onAddHoliday, onDeleteHoliday
     } = props;
     
     const [activeTab, setActiveTab] = useState<ActiveTab>('tests');
     const [filterText, setFilterText] = useState('');
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     
     // State for schedule tab
     const [newHoliday, setNewHoliday] = useState({ date: '', name: '' });
@@ -245,41 +249,49 @@ const SettingsPage: React.FC<SettingsPageProps> = (props) => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg border border-gray-200 text-black">
-            <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
-                <h2 className="text-2xl font-bold">Cài đặt chung</h2>
-                <div className="flex items-center gap-2">
-                    {activeTab === 'chemicals' && <button onClick={onOpenImportModal} className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-sm hover:bg-gray-100"><ImportIcon/>Nhập Excel</button>}
-                    {activeTab !== 'schedule' && <button onClick={handleAddClick} className="inline-flex items-center gap-2 px-3 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800"><PlusIcon/>{getAddButtonText()}</button>}
+        <>
+            <div className="bg-white p-6 rounded-lg border border-gray-200 text-black">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <h2 className="text-2xl font-bold">Cài đặt chung</h2>
+                    <div className="flex items-center gap-2">
+                        {activeTab === 'chemicals' && <button onClick={() => setIsImportModalOpen(true)} className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md text-sm hover:bg-gray-100"><ImportIcon/>Nhập Excel</button>}
+                        {activeTab !== 'schedule' && <button onClick={handleAddClick} className="inline-flex items-center gap-2 px-3 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800"><PlusIcon/>{getAddButtonText()}</button>}
+                    </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-200 pb-4">
+                    <TabButton tab="tests" label="Xét nghiệm" />
+                    <TabButton tab="chemicals" label="Hóa chất - Vật tư" />
+                    <TabButton tab="equipment" label="Máy xét nghiệm" />
+                    <TabButton tab="locations" label="Vị trí" />
+                    <TabButton tab="storage" label="Kho-Tủ" />
+                    <TabButton tab="iqc" label="Vật liệu Nội kiểm" />
+                    <TabButton tab="eqa" label="Vật liệu Ngoại kiểm" />
+                    <TabButton tab="documents" label="Danh mục Tài liệu" />
+                    <TabButton tab="users" label="Người dùng" />
+                    <TabButton tab="schedule" label="Lịch làm việc" />
+                </div>
+                {activeTab !== 'schedule' && (
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm..."
+                        value={filterText}
+                        onChange={e => setFilterText(e.target.value)}
+                        className="block w-full max-w-sm rounded-md border border-gray-300 bg-white py-2 px-4 text-black placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-black"
+                    />
+                </div>
+                )}
+                <div className="overflow-x-auto">
+                {renderTable()}
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2 mb-4 border-b border-gray-200 pb-4">
-                <TabButton tab="tests" label="Xét nghiệm" />
-                <TabButton tab="chemicals" label="Hóa chất - Vật tư" />
-                <TabButton tab="equipment" label="Máy xét nghiệm" />
-                <TabButton tab="locations" label="Vị trí" />
-                <TabButton tab="storage" label="Kho-Tủ" />
-                <TabButton tab="iqc" label="Vật liệu Nội kiểm" />
-                <TabButton tab="eqa" label="Vật liệu Ngoại kiểm" />
-                <TabButton tab="documents" label="Danh mục Tài liệu" />
-                <TabButton tab="users" label="Người dùng" />
-                <TabButton tab="schedule" label="Lịch làm việc" />
-            </div>
-            {activeTab !== 'schedule' && (
-             <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    value={filterText}
-                    onChange={e => setFilterText(e.target.value)}
-                    className="block w-full max-w-sm rounded-md border border-gray-300 bg-white py-2 px-4 text-black placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-black"
-                />
-            </div>
-            )}
-             <div className="overflow-x-auto">
-               {renderTable()}
-            </div>
-        </div>
+            <CatalogImportModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                onImport={onImportChemicalMasters}
+                onDownloadTemplate={onDownloadChemicalTemplate}
+            />
+        </>
     );
 };
 

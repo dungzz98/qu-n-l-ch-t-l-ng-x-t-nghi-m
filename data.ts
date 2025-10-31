@@ -1,4 +1,3 @@
-
 import * as types from './types';
 
 export const initialUsers: types.User[] = [
@@ -173,7 +172,11 @@ export const initialLabEquipment: types.LabEquipment[] = [
 // FIX: Changed type to Omit<types.NonConformity, 'ncId'>[] as the ncId is generated dynamically in App.tsx
 export const initialNonConformities: Omit<types.NonConformity, 'ncId'>[] = [
     { id: 'nc-1', date: '2024-05-10', description: 'Kết quả QC Glucose control 2 vượt ngưỡng +3SD trên máy AU480.', category: 'analytical', severity: 'severe', status: 'in_progress', reportedBy: 'Trần Thị B', rootCauseAnalysis: 'Có thể do thuốc thử lô mới hoặc do máy cần hiệu chuẩn lại.', correctiveAction: 'Chạy lại QC, kiểm tra thuốc thử và máy. Tạm ngưng trả kết quả Glucose.', preventiveAction: 'Xem xét lại quy trình thay lô thuốc thử QC.' },
-    { id: 'nc-2', date: '2024-04-22', description: 'Mẫu máu của bệnh nhân X (khoa Cấp cứu) bị vỡ hồng cầu khi nhận.', category: 'pre-analytical', severity: 'minor', status: 'closed', reportedBy: 'Lê Văn C', rootCauseAnalysis: 'Kỹ thuật lấy mẫu của điều dưỡng chưa đúng.', correctiveAction: 'Yêu cầu lấy lại mẫu.', preventiveAction: 'Tập huấn lại cho điều dưỡng về kỹ thuật lấy mẫu.', closedBy: 'Trần Thị B', closedDate: '2024-04-23', actionEffectiveness: 'Tỷ lệ mẫu vỡ hồng cầu từ khoa Cấp cứu giảm trong tuần theo dõi.' },
+    { id: 'nc-2', date: '2024-04-22', description: 'Mẫu máu của bệnh nhân X (khoa Cấp cứu) bị vỡ hồng cầu khi nhận.', category: 'pre-analytical', severity: 'minor', status: 'closed', reportedBy: 'Lê Văn C', rootCauseAnalysis: 'Kỹ thuật lấy mẫu của điều dưỡng chưa đúng.', correctiveAction: 'Yêu cầu lấy lại mẫu.', preventiveAction: 'Tập huấn lại cho điều dưỡng về kỹ thuật lấy mẫu.', closedBy: 'Trần Thị B', closedDate: '2024-04-23', actionEffectiveness: 'Tỷ lệ mẫu vỡ hồng cầu từ khoa Cấp cứu giảm trong tuần theo dõi.', preventiveActionId: 'pa-1' },
+];
+
+export const initialPreventiveActionReports: types.PreventiveActionReport[] = [
+    { id: 'pa-1', reportId: 'HDPN-2407001', nonConformityId: 'nc-2', dateCreated: '2024-04-25', problemDescription: 'Tỷ lệ mẫu vỡ hồng cầu cao từ khoa Cấp cứu.', riskFactors: 'Nhân viên mới, thiếu kinh nghiệm lấy mẫu.', preventiveMeasures: 'Tổ chức buổi tập huấn kỹ thuật lấy mẫu cho điều dưỡng khoa Cấp cứu.', executor: 'Trần Thị B', executionDate: '2024-04-30', effectiveness: 'Tỷ lệ mẫu vỡ đã giảm đáng kể.', evaluator: 'Nguyễn Văn A', evaluationDate: '2024-05-10' }
 ];
 
 const today = new Date();
@@ -249,7 +252,6 @@ export const initialBackupSettings: types.BackupSettings = { frequency: 'never',
 export const initialManualPreparationLogs: types.ManualPreparationLog[] = [];
 export const initialPlanningSlips: types.PlanningSlip[] = [];
 export const initialDisposalRecords: types.DisposalRecord[] = [];
-export const initialPreventiveActionReports: types.PreventiveActionReport[] = [];
 export const initialMonitoredAreas: types.MonitoredArea[] = [];
 export const initialMonitoredEquipment: types.MonitoredEquipment[] = [];
 export const initialWaterSources: types.WaterSource[] = [];

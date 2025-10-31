@@ -1,6 +1,6 @@
-// FIX: Fixed incorrect React import statement.
+// FIX: Changed incorrect import statement.
 import React from 'react';
-import { PreventiveActionReport } from '../types';
+import { PreventiveActionReport, NonConformity } from '../types';
 import { PlusIcon } from './icons/PlusIcon';
 import { EditIcon } from './icons/EditIcon';
 import { TrashIcon } from './icons/TrashIcon';
@@ -11,6 +11,10 @@ interface PreventiveActionsPageProps {
   onAddOrUpdate: (item: PreventiveActionReport | null) => void;
   onDelete: (id: string) => void;
   onExportToDoc: (item: PreventiveActionReport) => void;
+  // New props for linking and highlighting
+  nonConformities: NonConformity[];
+  focusedItemId: string | null;
+  onNavigate: (tab: 'list' | 'corrective_actions', id: string) => void;
 }
 
 const formatDate = (dateString?: string) => {
@@ -23,8 +27,11 @@ const formatDate = (dateString?: string) => {
   });
 };
 
-const PreventiveActionsPage: React.FC<PreventiveActionsPageProps> = ({ reports, onAddOrUpdate, onDelete, onExportToDoc }) => {
-  
+// FIX: Changed to a named export for consistency and to prevent potential module resolution errors.
+export const PreventiveActionsPage: React.FC<PreventiveActionsPageProps> = ({ reports, onAddOrUpdate, onDelete, onExportToDoc, nonConformities, focusedItemId, onNavigate }) => {
+  // FIX: Explicitly typed the Map to ensure TypeScript correctly infers the type of `sourceNc` from `ncMap.get()`. This resolves the error where properties on `sourceNc` were not accessible because it was being inferred as type `unknown`.
+  const ncMap = new Map<string, NonConformity>(nonConformities.map(nc => [nc.id, nc]));
+
   return (
     <div>
       <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
@@ -41,7 +48,7 @@ const PreventiveActionsPage: React.FC<PreventiveActionsPageProps> = ({ reports, 
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Số HĐPN</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Số HĐPN / SKPH Gốc</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Vấn đề</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Người thực hiện</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Ngày TH</th>
@@ -55,10 +62,19 @@ const PreventiveActionsPage: React.FC<PreventiveActionsPageProps> = ({ reports, 
               const status = isEvaluated
                 ? { text: 'Đã đánh giá', color: 'bg-green-100 text-green-800' }
                 : { text: 'Đang theo dõi', color: 'bg-yellow-100 text-yellow-800' };
+              
+              const sourceNc = item.nonConformityId ? ncMap.get(item.nonConformityId) : null;
 
               return (
-              <tr key={item.id} className="hover:bg-slate-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-700">{item.reportId}</td>
+              <tr key={item.id} className={`transition-colors duration-300 ${item.id === focusedItemId ? 'animate-pulse-yellow' : 'hover:bg-slate-50'}`}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                    <p className="text-slate-700">{item.reportId}</p>
+                    {sourceNc && (
+                      <button onClick={() => onNavigate('list', sourceNc.id)} className="text-blue-600 hover:underline">
+                        ({sourceNc.ncId})
+                      </button>
+                    )}
+                  </td>
                   <td className="px-6 py-4 text-sm text-slate-900 max-w-sm" title={item.problemDescription}>
                       <p className="truncate font-medium">{item.problemDescription}</p>
                   </td>

@@ -1,12 +1,11 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { ManualPreparationLog, Chemical, ChemicalMaster, User, IQCResult, TestParameter, ControlMaterial, ControlLotTarget, NonConformity, PreventiveActionReport } from '../types';
+import { ManualPreparationLog, Chemical, ChemicalMaster, User, IQCResult, TestParameter, ControlMaterial, ControlLotTarget } from '../types';
 import PreparationLogPage from './PreparationLogPage';
 import IQCPage from './IQCPage';
-import NonConformityPage from './NonConformityPage';
-import PreventiveActionsPage from './PreventiveActionsPage';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 
-type SubPage = 'preparationLog' | 'iqc' | 'nonConformity' | 'preventiveActions';
+type SubPage = 'preparationLog' | 'iqc';
 
 interface QualityManagementPageProps {
     manualLogEntries: ManualPreparationLog[];
@@ -20,32 +19,15 @@ interface QualityManagementPageProps {
     controlLotTargets: ControlLotTarget[];
     iqcResults: IQCResult[];
     onAddIQCResult: () => void;
-    
-    nonConformities: NonConformity[];
-    onAddOrUpdateNC: (item: NonConformity | null) => void;
-    onDeleteNC: (id: string) => void;
-    onExportToDoc: (items: NonConformity[]) => void;
-    onExportToExcel: (items: NonConformity[]) => void;
-    onExportCorrectiveActionToDoc: (item: NonConformity) => void;
-    onExportCorrectiveActionLogToDoc: (items: NonConformity[]) => void;
-    onExportCorrectiveActionLogToExcel: (items: NonConformity[]) => void;
-    
-    // FIX: Added missing properties to the interface to match what's being passed from App.tsx.
-    preventiveActionReports: PreventiveActionReport[];
-    onAddOrUpdatePreventiveAction: (item: PreventiveActionReport | null) => void;
-    onDeletePreventiveAction: (id: string) => void;
-    onExportPreventiveActionToDoc: (item: PreventiveActionReport) => void;
 }
 
 const QualityManagementPage: React.FC<QualityManagementPageProps> = (props) => {
-    const [activeSubPage, setActiveSubPage] = useState<SubPage>('nonConformity');
+    const [activeSubPage, setActiveSubPage] = useState<SubPage>('iqc');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     const subPages: { id: SubPage; label: string }[] = [
         { id: 'iqc', label: 'Nội kiểm (IQC)' },
-        { id: 'nonConformity', label: 'Sự không phù hợp' },
-        { id: 'preventiveActions', label: 'Hành động Phòng ngừa' },
         { id: 'preparationLog', label: 'Sổ Pha chế' },
     ];
     
@@ -83,25 +65,6 @@ const QualityManagementPage: React.FC<QualityManagementPageProps> = (props) => {
                     controlLotTargets={props.controlLotTargets}
                     iqcResults={props.iqcResults}
                     onAddResult={props.onAddIQCResult}
-                />;
-            case 'nonConformity':
-                return <NonConformityPage
-                    nonConformities={props.nonConformities}
-                    onAddOrUpdate={props.onAddOrUpdateNC}
-                    onDelete={props.onDeleteNC}
-                    currentUser={props.currentUser}
-                    onExportToDoc={props.onExportToDoc}
-                    onExportToExcel={props.onExportToExcel}
-                    onExportCorrectiveActionToDoc={props.onExportCorrectiveActionToDoc}
-                    onExportCorrectiveActionLogToDoc={props.onExportCorrectiveActionLogToDoc}
-                    onExportCorrectiveActionLogToExcel={props.onExportCorrectiveActionLogToExcel}
-                />;
-             case 'preventiveActions':
-                return <PreventiveActionsPage
-                    reports={props.preventiveActionReports}
-                    onAddOrUpdate={props.onAddOrUpdatePreventiveAction}
-                    onDelete={props.onDeletePreventiveAction}
-                    onExportToDoc={props.onExportPreventiveActionToDoc}
                 />;
             default:
                 return null;

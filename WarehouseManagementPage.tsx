@@ -22,6 +22,7 @@ interface WarehouseManagementPageProps {
     disposalRecords: DisposalRecord[];
     onInstrumentStock: OnInstrumentStock[];
     currentUser: User | null;
+    focusedItemId: string | null;
     
     onEditChemical: (chemical: Chemical) => void;
     onDeleteChemical: (id: string) => void;
@@ -98,7 +99,7 @@ const WarehouseManagementPage: React.FC<WarehouseManagementPageProps> = (props) 
                     onRestore={() => {}}
                 />;
             case 'inventory':
-                return <InventoryTable chemicals={props.chemicals} onEdit={props.onEditChemical} onDelete={props.onDeleteChemical} onGetSafetyInfo={props.onGetSafetyInfo} onOpenAdjustModal={props.onOpenAdjustModal} onOpenUsageLog={props.onOpenUsageLog} onOpenBarcodeModal={props.onOpenBarcodeModal} onOpenSafetyDoc={props.onOpenSafetyDoc} />;
+                return <InventoryTable chemicals={props.chemicals} onEdit={props.onEditChemical} onDelete={props.onDeleteChemical} onGetSafetyInfo={props.onGetSafetyInfo} onOpenAdjustModal={props.onOpenAdjustModal} onOpenUsageLog={props.onOpenUsageLog} onOpenBarcodeModal={props.onOpenBarcodeModal} onOpenSafetyDoc={props.onOpenSafetyDoc} focusedItemId={props.focusedItemId} />;
             case 'stockIn':
                 return <StockInPage chemicalMasters={props.chemicalMasters} onAddLot={props.onAddLot} onImport={() => {}} onDownloadTemplate={() => {}} />;
             case 'stockOut':

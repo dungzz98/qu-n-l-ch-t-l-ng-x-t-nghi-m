@@ -1,4 +1,3 @@
-
 export interface UsageLogEntry {
   date: string; // ISO string
   reason: string;
@@ -392,6 +391,7 @@ export interface NonConformity {
   id: string;
   ncId: string; // User-facing ID, e.g., SKPH-2407001
   hdkpId?: string; // Corrective Action ID, e.g., HDKP-2407001
+  preventiveActionId?: string; // Links to PreventiveActionReport.id
   date: string; // YYYY-MM-DD
   
   // Section 1: Detection
@@ -433,6 +433,7 @@ export interface NonConformity {
 export interface PreventiveActionReport {
   id: string;
   reportId: string; // e.g., HDPN-2407001
+  nonConformityId?: string; // Links back to NonConformity.id if applicable
   dateCreated: string; // YYYY-MM-DD
   problemDescription: string;
   riskFactors: string;
@@ -616,4 +617,13 @@ export interface EQAMaterial {
     provider: string;
     lotNumber: string;
     expirationDate: string; // YYYY-MM-DD
+}
+
+// Represents a single item in the global search results
+export interface SearchResult {
+    id: string;
+    type: 'chemical' | 'equipment' | 'personnel' | 'document' | 'nonconformity';
+    title: string;
+    details: string;
+    category: string; // e.g., 'Kho', 'Thiết bị'
 }
